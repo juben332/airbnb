@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Locale — Find a stay</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="css/locale.css">
+<style>
+
+/* ── Hero ─────────────────────────────────────────────────── */
+.hero {
+  padding: var(--s-10) var(--gutter) var(--s-8);
+  max-width: var(--measure);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-7);
+}
+.hero__hed {
+  font-family: var(--serif);
+  font-size: clamp(60px, 8.5vw, 124px);
+  font-weight: 300;
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  max-width: 16ch;
+}
+.hero__hed em { font-style: italic; font-weight: 400; color: var(--clay); }
+
+/* Search bar */
+.search-bar {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1fr auto;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  max-width: 820px;
+}
+.search-bar .field {
+  padding: 14px var(--s-5);
+  border-right: 1px solid var(--rule);
+  gap: 4px;
+}
+.search-bar .field:last-of-type { border-right: 0; }
+.search-bar .field__label { font-size: 10px; }
+.search-bar .field__input {
+  border-bottom: 0;
+  padding: 2px 0;
+  font-size: 19px;
+}
+.search-bar .btn {
+  border-radius: 0;
+  padding: 0 var(--s-6);
+  border: 0;
+  background: var(--clay);
+  color: var(--paper);
+  font-size: 14px;
+}
+.search-bar .btn:hover { background: var(--clay-deep); }
+
+/* Stats strip */
+.stats {
+  display: flex;
+  gap: var(--s-8);
+  border-top: 1px solid var(--ink);
+  padding-top: var(--s-4);
+  max-width: 820px;
+  margin-top: var(--s-4);
+}
+.stats__item { display: flex; align-items: baseline; gap: 8px; }
+.stats__num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink);
+}
+.stats__lbl {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
+
+/* ── Pricing strip ────────────────────────────────────────── */
+.pricing {
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+.pricing__inner {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.pricing__tier {
+  padding: var(--s-6) 0;
+  border-right: 1px solid var(--rule);
+  padding-right: var(--s-6);
+  padding-left: var(--s-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.pricing__tier:first-child { padding-left: 0; }
+.pricing__tier:last-child  { border-right: 0; padding-right: 0; }
+.pricing__badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.pricing__num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 72px;
+  line-height: 0.9;
+  letter-spacing: -0.025em;
+  color: var(--clay);
+}
+.pricing__desc {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  max-width: 34ch;
+}
+.pricing__note {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--mute-2);
+  margin-top: auto;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--rule);
+}
+
+/* ── Featured stays ───────────────────────────────────────── */
+.stays-section {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--s-9) var(--gutter);
+}
+.stays-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  border-top: 1px solid var(--ink);
+  padding-top: var(--s-4);
+  margin-bottom: var(--s-7);
+}
+.stays-header h2 {
+  font-family: var(--serif);
+  font-size: clamp(32px, 3.6vw, 48px);
+  font-weight: 300;
+  letter-spacing: -0.018em;
+}
+.stays-header h2 em { font-style: italic; }
+
+.stays-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+.stay-card {
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  transition: background .15s ease;
+}
+.stay-card:hover { background: var(--paper-2); }
+.stay-card__photo {
+  aspect-ratio: 4 / 5;
+  position: relative;
+  overflow: hidden;
+}
+.stay-card:nth-child(1) .stay-card__photo {
+  background:
+    radial-gradient(ellipse at 35% 65%, rgba(255,245,220,0.4) 0 25%, transparent 55%),
+    linear-gradient(160deg, #C9BFA7 0%, #DDB59E 55%, #A14A2A 100%);
+}
+.stay-card:nth-child(2) .stay-card__photo {
+  background: linear-gradient(160deg, #DDD3BE 0%, #807668 65%, #2E2823 100%);
+}
+.stay-card:nth-child(3) .stay-card__photo {
+  background:
+    radial-gradient(ellipse at 60% 40%, rgba(255,245,210,0.35) 0 30%, transparent 60%),
+    linear-gradient(170deg, #5C6240 0%, #4A413A 85%);
+}
+.stay-card__photo-meta {
+  position: absolute;
+  top: 14px; left: 16px; right: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.stay-card__body { padding: var(--s-5); display: flex; flex-direction: column; flex: 1; }
+.stay-card__eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+  margin-bottom: var(--s-3);
+}
+.stay-card__title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.012em;
+  margin-bottom: var(--s-2);
+}
+.stay-card__title em { font-style: italic; }
+.stay-card__host {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--mute);
+  margin-bottom: var(--s-4);
+}
+.stay-card__details {
+  display: flex;
+  gap: var(--s-4);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--mute);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: auto;
+  border-top: 1px solid var(--rule);
+  padding-top: var(--s-3);
+  flex-wrap: wrap;
+}
+.stay-card__price {
+  margin-left: auto;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  color: var(--clay);
+  letter-spacing: -0.01em;
+}
+
+/* ── How it works ─────────────────────────────────────────── */
+.how {
+  border-top: 1px solid var(--ink);
+  padding-block: var(--s-9);
+}
+.how__inner {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.how__head {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--s-8);
+  margin-bottom: var(--s-8);
+  align-items: end;
+}
+.how__hed {
+  font-family: var(--serif);
+  font-size: clamp(40px, 4.8vw, 64px);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.022em;
+}
+.how__hed em { font-style: italic; }
+.how__intro {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ink-2);
+  max-width: 52ch;
+}
+.how__steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+.how__step {
+  padding: var(--s-6) var(--s-6) var(--s-6) 0;
+  border-right: 1px solid var(--rule);
+}
+.how__step:last-child { border-right: 0; padding-right: 0; }
+.how__step:not(:first-child) { padding-left: var(--s-6); }
+.how__step-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--paper-3);
+  letter-spacing: -0.03em;
+  margin-bottom: var(--s-4);
+}
+.how__step-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--s-3);
+}
+.how__step-title em { font-style: italic; color: var(--clay); }
+.how__step-body {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+/* ── Cities ───────────────────────────────────────────────── */
+.cities {
+  background: var(--paper-2);
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding-block: var(--s-9);
+}
+.cities__inner {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.cities__head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  margin-bottom: var(--s-7);
+}
+.cities__hed {
+  font-family: var(--serif);
+  font-size: clamp(36px, 4vw, 54px);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+.cities__hed em { font-style: italic; }
+.cities-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+.city-item {
+  background: var(--paper-2);
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  transition: background .15s ease;
+  cursor: pointer;
+}
+.city-item:hover { background: var(--paper); }
+.city-item__flag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.city-item__name {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.city-item__name em { font-style: italic; }
+.city-item__sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--mute);
+  margin-top: 2px;
+}
+.city-item__count {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--mute-2);
+  margin-top: auto;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--rule);
+}
+
+/* ── Epigraph / quote ─────────────────────────────────────── */
+.epigraph-block {
+  padding: var(--s-9) 0;
+  border-top: 1px solid var(--rule);
+}
+.epigraph-block__inner {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  display: grid;
+  grid-template-columns: 80px 1fr 80px;
+  gap: var(--s-7);
+  align-items: end;
+}
+.epigraph-block__sidenote {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--mute);
+  line-height: 1.7;
+  align-self: end;
+}
+.epigraph-block__quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(26px, 3.2vw, 42px);
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  margin: 0;
+  text-wrap: pretty;
+}
+.epigraph-block__attr {
+  font-family: var(--sans);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+  text-align: right;
+  align-self: end;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .pricing__inner  { grid-template-columns: 1fr 1fr; }
+  .pricing__tier:nth-child(2) { border-right: 0; padding-right: 0; }
+  .pricing__tier:nth-child(3) { padding-left: 0; border-right: 0; }
+  .stays-grid  { grid-template-columns: 1fr 1fr; }
+  .cities-grid { grid-template-columns: repeat(3, 1fr); }
+  .how__steps  { grid-template-columns: 1fr 1fr; }
+  .how__head   { grid-template-columns: 1fr; }
+  .site-footer__inner { grid-template-columns: 1fr 1fr; gap: var(--s-6); }
+}
+
+@media (max-width: 700px) {
+  .search-bar { grid-template-columns: 1fr; }
+  .search-bar .field { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .search-bar .btn   { border-radius: 0; padding: var(--s-4); }
+  .pricing__inner  { grid-template-columns: 1fr; }
+  .pricing__tier   { border-right: 0; border-bottom: 1px solid var(--rule); padding: var(--s-6) 0 !important; }
+  .stays-grid  { grid-template-columns: 1fr; }
+  .how__steps  { grid-template-columns: 1fr; }
+  .how__step   { border-right: 0; border-bottom: 1px solid var(--rule); padding: var(--s-5) 0 !important; }
+  .cities-grid { grid-template-columns: 1fr 1fr; }
+  .epigraph-block__inner { grid-template-columns: 1fr; }
+  .epigraph-block__sidenote,
+  .epigraph-block__attr { display: none; }
+  .topnav__links { display: none; }
+  .site-footer__inner { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Site nav ──────────────────────────────────────────────── -->
+<nav class="topnav">
+  <div class="topnav__inner">
+    <a href="marketing.html" class="topnav__brand">Locale<span class="dot"></span></a>
+    <div class="topnav__links">
+      <a href="marketing.html" class="is-current">Find a stay</a>
+      <a href="#">Cities</a>
+      <a href="#">Hosts</a>
+      <a href="#">Notes</a>
+      <a href="#">Journal</a>
+    </div>
+    <div class="topnav__cta">
+      <a href="dashboard.html" class="link-arrow" style="border: 0;">Sign in</a>
+      <button class="btn btn--small">Become a host</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Hero ──────────────────────────────────────────────────── -->
+<section class="hero">
+  <div>
+    <div class="t-cap" style="margin-bottom: var(--s-5);">— For long-stay travellers</div>
+    <h1 class="hero__hed">Stay long enough to <em>know the bakery's name.</em></h1>
+  </div>
+  <div>
+    <div class="search-bar">
+      <div class="field">
+        <span class="field__label">— Where</span>
+        <input class="field__input" type="text" placeholder="City, neighbourhood…">
+      </div>
+      <div class="field">
+        <span class="field__label">— Arriving</span>
+        <input class="field__input" type="text" placeholder="May 14">
+      </div>
+      <div class="field">
+        <span class="field__label">— Nights</span>
+        <input class="field__input" type="text" placeholder="21">
+      </div>
+      <button class="btn">Find a stay <span class="arrow">→</span></button>
+    </div>
+    <div class="stats">
+      <div class="stats__item">
+        <span class="stats__num">twelve</span>
+        <span class="stats__lbl">cities</span>
+      </div>
+      <div class="stats__item">
+        <span class="stats__num">184</span>
+        <span class="stats__lbl">hosts</span>
+      </div>
+      <div class="stats__item">
+        <span class="stats__num">14 nights</span>
+        <span class="stats__lbl">minimum</span>
+      </div>
+      <div class="stats__item">
+        <span class="stats__num">2020</span>
+        <span class="stats__lbl">since</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Pricing strip ─────────────────────────────────────────── -->
+<div class="pricing">
+  <div class="pricing__inner">
+    <div class="pricing__tier">
+      <span class="pricing__badge">— A fortnight · 14 nights</span>
+      <span class="pricing__num">€140</span>
+      <p class="pricing__desc">A standard nightly rate. Long enough to find the rhythm of a street, not enough to find the shortcuts.</p>
+      <span class="pricing__note">From · per night</span>
+    </div>
+    <div class="pricing__tier">
+      <span class="pricing__badge">— A month · 15–59 nights</span>
+      <span class="pricing__num">€118</span>
+      <p class="pricing__desc">Fifteen percent off, automatically. Stay long enough that the neighbours stop nodding and start talking.</p>
+      <span class="pricing__note">— 15% · per night</span>
+    </div>
+    <div class="pricing__tier">
+      <span class="pricing__badge">— A season · 60+ nights</span>
+      <span class="pricing__num">€95</span>
+      <p class="pricing__desc">Stay sixty nights and the host writes you the local notes — the ones that aren't on any map.</p>
+      <span class="pricing__note">— 32% · per night</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Featured stays ────────────────────────────────────────── -->
+<section class="stays-section">
+  <header class="stays-header">
+    <h2>This week's <em>three.</em></h2>
+    <a class="link-arrow">All twelve cities <span class="arrow">→</span></a>
+  </header>
+
+  <div class="stays-grid">
+    <a href="stay.html" class="stay-card">
+      <div class="stay-card__photo">
+        <div class="stay-card__photo-meta">
+          <span>— Lisbon · Estrela</span>
+          <span>No. 014</span>
+        </div>
+      </div>
+      <div class="stay-card__body">
+        <div class="stay-card__eyebrow">Well-loved · 21+ nights</div>
+        <h3 class="stay-card__title">A second-floor flat above the <em>fishmonger.</em></h3>
+        <p class="stay-card__host">— Hosted by Marta, since 2023.</p>
+        <div class="stay-card__details">
+          <span>1 bed · 1 bath</span>
+          <span>2 desks</span>
+          <span>fibre</span>
+          <span class="stay-card__price">€140</span>
+        </div>
+      </div>
+    </a>
+    <a href="stay.html" class="stay-card">
+      <div class="stay-card__photo">
+        <div class="stay-card__photo-meta">
+          <span>— Rome · Trastevere</span>
+          <span>No. 027</span>
+        </div>
+      </div>
+      <div class="stay-card__body">
+        <div class="stay-card__eyebrow">Sunny balcony · 14+ nights</div>
+        <h3 class="stay-card__title">A studio that gets the <em>morning sun.</em></h3>
+        <p class="stay-card__host">— Hosted by Giulio, since 2021.</p>
+        <div class="stay-card__details">
+          <span>studio · 1 bath</span>
+          <span>1 desk</span>
+          <span>fibre</span>
+          <span class="stay-card__price">€115</span>
+        </div>
+      </div>
+    </a>
+    <a href="stay.html" class="stay-card">
+      <div class="stay-card__photo">
+        <div class="stay-card__photo-meta" style="color: rgba(244,239,230,0.9);">
+          <span>— Oaxaca · Jalatlaco</span>
+          <span>No. 041</span>
+        </div>
+      </div>
+      <div class="stay-card__body">
+        <div class="stay-card__eyebrow">Courtyard · 30+ nights</div>
+        <h3 class="stay-card__title">A casita around a <em>courtyard,</em> with three lemon trees.</h3>
+        <p class="stay-card__host">— Hosted by Lucía, since 2020.</p>
+        <div class="stay-card__details">
+          <span>2 bed · 1 bath</span>
+          <span>1 desk</span>
+          <span>fibre</span>
+          <span class="stay-card__price">€88</span>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ── How it works ───────────────────────────────────────────── -->
+<div class="how">
+  <div class="how__inner">
+    <div class="how__head">
+      <h2 class="how__hed">The way it <em>works.</em></h2>
+      <p class="how__intro">A small list of flats, kept by the people who live in them. No algorithm. No instant book. A conversation, then a key.</p>
+    </div>
+    <div class="how__steps">
+      <div class="how__step">
+        <div class="how__step-num">01</div>
+        <h3 class="how__step-title">You find a <em>stay.</em></h3>
+        <p class="how__step-body">Browse the list. Each flat is described the way a host would describe it — what the kitchen smells like in the morning, whether the desk gets the afternoon light.</p>
+      </div>
+      <div class="how__step">
+        <div class="how__step-num">02</div>
+        <h3 class="how__step-title">You write to the <em>host.</em></h3>
+        <p class="how__step-body">No instant booking. You write a short note about who you are and what you're working on. The host reads it. They write back, usually within a day.</p>
+      </div>
+      <div class="how__step">
+        <div class="how__step-num">03</div>
+        <h3 class="how__step-title">You <em>stay,</em> then you know.</h3>
+        <p class="how__step-body">The flat is yours. The host is nearby if you need them, invisible if you don't. By the end of the second week, you'll know the bakery's name.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Cities ─────────────────────────────────────────────────── -->
+<div class="cities">
+  <div class="cities__inner">
+    <div class="cities__head">
+      <h2 class="cities__hed">Twelve cities. <em>One standard.</em></h2>
+      <a class="link-arrow">All cities <span class="arrow">→</span></a>
+    </div>
+    <div class="cities-grid">
+      <div class="city-item">
+        <span class="city-item__flag">PT — Europe</span>
+        <span class="city-item__name"><em>Lisbon</em></span>
+        <span class="city-item__sub">Estrela · Mouraria · Príncipe Real</span>
+        <span class="city-item__count">18 stays available</span>
+      </div>
+      <div class="city-item">
+        <span class="city-item__flag">IT — Europe</span>
+        <span class="city-item__name"><em>Rome</em></span>
+        <span class="city-item__sub">Trastevere · Pigneto · Prati</span>
+        <span class="city-item__count">22 stays available</span>
+      </div>
+      <div class="city-item">
+        <span class="city-item__flag">MX — Americas</span>
+        <span class="city-item__name"><em>Oaxaca</em></span>
+        <span class="city-item__sub">Jalatlaco · Centro · Xochimilco</span>
+        <span class="city-item__count">14 stays available</span>
+      </div>
+      <div class="city-item">
+        <span class="city-item__flag">JP — Asia</span>
+        <span class="city-item__name"><em>Kyoto</em></span>
+        <span class="city-item__sub">Higashiyama · Fushimi · Nishiki</span>
+        <span class="city-item__count">11 stays available</span>
+      </div>
+      <div class="city-item">
+        <span class="city-item__flag">GR — Europe</span>
+        <span class="city-item__name"><em>Athens</em></span>
+        <span class="city-item__sub">Monastiraki · Koukaki · Psyrri</span>
+        <span class="city-item__count">16 stays available</span>
+      </div>
+      <div class="city-item">
+        <span class="city-item__flag">MA — Africa</span>
+        <span class="city-item__name"><em>Marrakech</em></span>
+        <span class="city-item__sub">Mellah · Mouassine · Bab Doukkala</span>
+        <span class="city-item__count">9 stays available</span>
+      </div>
+      <div class="city-item">
+        <span class="city-item__flag">ES — Europe</span>
+        <span class="city-item__name"><em>Seville</em></span>
+        <span class="city-item__sub">Triana · Santa Cruz · Macarena</span>
+        <span class="city-item__count">13 stays available</span>
+      </div>
+      <div class="city-item">
+        <span class="city-item__flag">CO — Americas</span>
+        <span class="city-item__name"><em>Cartagena</em></span>
+        <span class="city-item__sub">Getsemaní · Centro · Bocagrande</span>
+        <span class="city-item__count">8 stays available</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Epigraph ───────────────────────────────────────────────── -->
+<div class="epigraph-block">
+  <div class="epigraph-block__inner">
+    <div class="epigraph-block__sidenote">
+      Brand voice —<br>
+      Working<br>
+      principle 01
+    </div>
+    <blockquote class="epigraph-block__quote">
+      "A guidebook tells you what to see. A locale teaches you what to <em>notice.</em>"
+    </blockquote>
+    <div class="epigraph-block__attr">
+      Locale<br>
+      Brand voice
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ─────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div>
+      <div class="site-footer__brand">Locale<span class="dot"></span></div>
+      <p class="site-footer__tagline">For staying, not visiting. A small list of flats in twelve cities, kept by the people who live in them.</p>
+      <button class="btn btn--ghost btn--small" style="margin-top: var(--s-4);">Become a host</button>
+    </div>
+    <div class="site-footer__col">
+      <div class="site-footer__col-head">Explore</div>
+      <a href="#">Find a stay</a>
+      <a href="#">All cities</a>
+      <a href="#">Meet the hosts</a>
+      <a href="#">The journal</a>
+    </div>
+    <div class="site-footer__col">
+      <div class="site-footer__col-head">Hosts</div>
+      <a href="dashboard.html">Host dashboard</a>
+      <a href="#">List your flat</a>
+      <a href="#">Host standards</a>
+      <a href="#">Payouts</a>
+    </div>
+    <div class="site-footer__col">
+      <div class="site-footer__col-head">Company</div>
+      <a href="#">About</a>
+      <a href="#">Notes</a>
+      <a href="#">Press</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="site-footer__bottom">
+    <span>Locale · 2026</span>
+    <span>For long-stay travellers and the people who host them</span>
+    <span>locale.co</span>
+  </div>
+</footer>
+
+</body>
+</html>

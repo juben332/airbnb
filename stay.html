@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Locale — Marta's flat · Lisbon, Estrela · No. 014</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="css/locale.css">
+<style>
+
+/* ── Breadcrumb ───────────────────────────────────────────── */
+.breadcrumb {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--s-4) var(--gutter);
+  display: flex;
+  gap: var(--s-2);
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--mute);
+  border-bottom: 1px solid var(--rule);
+}
+.breadcrumb a:hover { color: var(--clay); }
+.breadcrumb__sep { color: var(--mute-2); }
+
+/* ── Stay hero (full-bleed photo panel) ───────────────────── */
+.stay-hero {
+  width: 100%;
+  aspect-ratio: 21 / 8;
+  min-height: 300px;
+  background:
+    radial-gradient(ellipse at 30% 60%, rgba(255,245,220,0.45) 0 22%, transparent 52%),
+    linear-gradient(160deg, #C9BFA7 0%, #DDB59E 48%, #A14A2A 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--s-7) var(--gutter);
+}
+.stay-hero__meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--paper);
+  display: flex;
+  gap: var(--s-5);
+}
+.stay-hero__no {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--paper);
+}
+.stay-hero__stamp {
+  position: absolute;
+  bottom: var(--s-7);
+  right: var(--gutter);
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  border: 1px solid rgba(244,239,230,0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--paper);
+  line-height: 1.1;
+}
+.stay-hero__stamp em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 19px;
+}
+.stay-hero__stamp span {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ── Content grid ─────────────────────────────────────────── */
+.stay-layout {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: var(--s-10);
+  padding-block: var(--s-7) var(--s-9);
+  align-items: start;
+}
+
+/* ── Left: content ────────────────────────────────────────── */
+.stay-content {}
+
+.stay-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+  margin-bottom: var(--s-4);
+}
+.stay-eyebrow .dot {
+  width: 5px; height: 5px;
+  background: var(--clay);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.stay-title {
+  font-family: var(--serif);
+  font-size: clamp(36px, 4.5vw, 62px);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--s-4);
+}
+.stay-title em { font-style: italic; }
+
+.stay-lede {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 21px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  margin-bottom: var(--s-7);
+  max-width: 52ch;
+}
+
+/* Details grid */
+.stay-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--ink);
+  border-left: 1px solid var(--rule);
+  margin-bottom: var(--s-7);
+}
+.stay-details__row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--s-4) var(--s-4);
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.stay-details__row .lbl {
+  font-family: var(--sans);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+  font-weight: 500;
+}
+.stay-details__row .val {
+  font-family: var(--serif);
+  font-size: 17px;
+  color: var(--ink);
+}
+.stay-details__row .val em { font-style: italic; }
+
+/* The letter / description */
+.stay-letter {
+  border-top: 1px solid var(--ink);
+  padding-top: var(--s-6);
+  margin-bottom: var(--s-7);
+}
+.stay-letter__head {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+  margin-bottom: var(--s-5);
+}
+.stay-letter__body {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  max-width: 56ch;
+}
+.stay-letter__body p + p { margin-top: var(--s-4); }
+.stay-letter__body em { font-style: italic; color: var(--ink); }
+
+/* What's nearby */
+.nearby {
+  border-top: 1px solid var(--ink);
+  padding-top: var(--s-6);
+  margin-bottom: var(--s-7);
+}
+.nearby__head {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+  margin-bottom: var(--s-5);
+}
+.nearby__list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3) var(--s-8);
+}
+.nearby__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--serif);
+  font-size: 16px;
+}
+.nearby__item .name { color: var(--ink); }
+.nearby__item .name em { font-style: italic; }
+.nearby__item .dist {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--mute);
+}
+
+/* Host section */
+.host-section {
+  border-top: 1px solid var(--ink);
+  padding-top: var(--s-6);
+}
+.host-section__head {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+  margin-bottom: var(--s-5);
+}
+.host-card {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: var(--s-5);
+  align-items: start;
+  padding: var(--s-5);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  margin-bottom: var(--s-5);
+}
+.host-card__avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #DDB59E, #A14A2A);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--paper);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.host-card__name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.host-card__since {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+  margin-bottom: var(--s-4);
+}
+.host-card__note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+/* ── Right: booking widget ────────────────────────────────── */
+.booking-widget {
+  position: sticky;
+  top: 80px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+}
+
+.booking-widget__price {
+  padding: var(--s-5) var(--s-5) var(--s-4);
+  border-bottom: 1px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.booking-widget__price .eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+  margin-bottom: 6px;
+}
+.booking-widget__price .num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 42px;
+  line-height: 1;
+  color: var(--clay);
+  letter-spacing: -0.02em;
+}
+.booking-widget__price .per {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--mute);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.booking-widget__price .min {
+  text-align: right;
+}
+.booking-widget__price .min .eyebrow { margin-bottom: 4px; }
+.booking-widget__price .min-nights {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 24px;
+  color: var(--ink);
+}
+
+.booking-widget__form {
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.booking-widget__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  border: 1px solid var(--rule-strong);
+  background: var(--rule-strong);
+}
+.booking-widget__row .field {
+  background: var(--paper);
+  padding: var(--s-3) var(--s-4);
+}
+.booking-widget__row .field__input {
+  font-size: 16px;
+  border-bottom: 0;
+  padding: 2px 0;
+}
+
+.booking-widget__summary {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.booking-widget__line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink-2);
+}
+.booking-widget__line .lbl {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--mute);
+}
+.booking-widget__line.total {
+  border-top: 1px solid var(--ink);
+  padding-top: var(--s-3);
+  margin-top: var(--s-2);
+  color: var(--ink);
+  font-size: 18px;
+}
+.booking-widget__line.total .lbl {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink);
+}
+.booking-widget__line.saving {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--olive);
+}
+
+.booking-widget__cta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5) var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+.booking-widget__note {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--mute);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ── Neighbourhood map placeholder ───────────────────────── */
+.neighbourhood {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 var(--gutter) var(--s-9);
+}
+.neighbourhood__inner {
+  border-top: 1px solid var(--ink);
+  padding-top: var(--s-6);
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: var(--s-8);
+  align-items: start;
+}
+.neighbourhood__info {}
+.neighbourhood__head {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+  margin-bottom: var(--s-5);
+}
+.neighbourhood__title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  margin-bottom: var(--s-4);
+}
+.neighbourhood__title em { font-style: italic; }
+.neighbourhood__body {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 42ch;
+}
+.neighbourhood__body em { font-style: italic; color: var(--ink); }
+.neighbourhood__map {
+  aspect-ratio: 4 / 3;
+  background:
+    linear-gradient(rgba(27,23,20,0.06) 0 1px, transparent 1px) 0 0 / 60px 60px,
+    linear-gradient(90deg, rgba(27,23,20,0.06) 0 1px, transparent 1px) 0 0 / 60px 60px,
+    var(--paper-2);
+  border: 1px solid var(--rule);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.neighbourhood__map .pin {
+  width: 14px; height: 14px;
+  background: var(--clay);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--clay) 20%, transparent);
+  position: absolute;
+  top: 48%; left: 46%;
+}
+.neighbourhood__map .coords {
+  position: absolute;
+  bottom: var(--s-4);
+  left: var(--s-4);
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--mute);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .stay-layout { grid-template-columns: 1fr; gap: var(--s-7); }
+  .booking-widget { position: static; }
+  .neighbourhood__inner { grid-template-columns: 1fr; }
+  .site-footer__inner { grid-template-columns: 1fr 1fr; gap: var(--s-6); }
+}
+@media (max-width: 700px) {
+  .stay-hero { aspect-ratio: 4 / 3; }
+  .stay-details { grid-template-columns: 1fr; }
+  .nearby__list { grid-template-columns: 1fr; }
+  .host-card { grid-template-columns: 1fr; }
+  .booking-widget__row { grid-template-columns: 1fr; }
+  .topnav__links { display: none; }
+  .site-footer__inner { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Site nav ──────────────────────────────────────────────── -->
+<nav class="topnav">
+  <div class="topnav__inner">
+    <a href="marketing.html" class="topnav__brand">Locale<span class="dot"></span></a>
+    <div class="topnav__links">
+      <a href="marketing.html" class="is-current">Find a stay</a>
+      <a href="#">Cities</a>
+      <a href="#">Hosts</a>
+      <a href="#">Notes</a>
+      <a href="#">Journal</a>
+    </div>
+    <div class="topnav__cta">
+      <a href="dashboard.html" class="link-arrow" style="border: 0;">Sign in</a>
+      <button class="btn btn--small">Become a host</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Breadcrumb ─────────────────────────────────────────────── -->
+<div class="breadcrumb">
+  <a href="marketing.html">Locale</a>
+  <span class="breadcrumb__sep">·</span>
+  <a href="#">Lisbon</a>
+  <span class="breadcrumb__sep">·</span>
+  <a href="#">Estrela</a>
+  <span class="breadcrumb__sep">·</span>
+  <span>No. 014 — Marta's flat</span>
+</div>
+
+<!-- ── Hero photo ─────────────────────────────────────────────── -->
+<div class="stay-hero">
+  <div class="stay-hero__meta">
+    <span>— Lisbon · Estrela</span>
+    <span>38° 42′ N · 9° 08′ W</span>
+  </div>
+  <span class="stay-hero__no">No. 014</span>
+  <div class="stay-hero__stamp">
+    <em>Marta's<br>flat</em>
+    <span>No. 014</span>
+  </div>
+</div>
+
+<!-- ── Main layout ───────────────────────────────────────────── -->
+<div class="stay-layout">
+
+  <!-- Left: content -->
+  <div class="stay-content">
+
+    <div class="stay-eyebrow">
+      <span class="dot"></span>
+      Well-loved · 21+ nights · Estrela, Lisbon
+    </div>
+
+    <h1 class="stay-title">A second-floor flat above the <em>fishmonger.</em></h1>
+
+    <p class="stay-lede">The balcony catches the morning sun until about nine; after that it's the kitchen window's turn. A kettle older than the building's lift.</p>
+
+    <!-- Details grid -->
+    <div class="stay-details">
+      <div class="stay-details__row">
+        <span class="lbl">Sleeps</span>
+        <span class="val"><em>two adults</em></span>
+      </div>
+      <div class="stay-details__row">
+        <span class="lbl">Rooms</span>
+        <span class="val">1 bed · 1 bath</span>
+      </div>
+      <div class="stay-details__row">
+        <span class="lbl">Desk</span>
+        <span class="val"><em>two, by the window</em></span>
+      </div>
+      <div class="stay-details__row">
+        <span class="lbl">Wifi</span>
+        <span class="val">fibre · 200 mbps</span>
+      </div>
+      <div class="stay-details__row">
+        <span class="lbl">Floor</span>
+        <span class="val">second, no lift</span>
+      </div>
+      <div class="stay-details__row">
+        <span class="lbl">Sun</span>
+        <span class="val"><em>morning, east</em></span>
+      </div>
+      <div class="stay-details__row">
+        <span class="lbl">Kitchen</span>
+        <span class="val">full · espresso machine</span>
+      </div>
+      <div class="stay-details__row">
+        <span class="lbl">Laundry</span>
+        <span class="val"><em>in-unit</em></span>
+      </div>
+    </div>
+
+    <!-- The letter -->
+    <div class="stay-letter">
+      <div class="stay-letter__head">— The flat, as Marta would describe it</div>
+      <div class="stay-letter__body">
+        <p>The fishmonger downstairs opens at six. By seven the street smells like the sea, by eight like espresso, by ten like bread. You stop noticing by the end of the first week, and then you start noticing again, the way you notice things you're about to miss.</p>
+        <p>The flat is on the second floor — there is no lift, and the stairs creak on the third and seventh step. The ceiling is high, the windows are tall, and the kitchen is smaller than it looks in photographs, which is to say <em>exactly the right size.</em></p>
+        <p>I left a list of places on the table. Not the ones in the guide. The ones I actually go to. The bakery on Rua de São Bento opens at 7:30 and sells out of the almond croissants by 8:15. You have been warned.</p>
+      </div>
+    </div>
+
+    <!-- Nearby -->
+    <div class="nearby">
+      <div class="nearby__head">— The neighbourhood</div>
+      <div class="nearby__list">
+        <div class="nearby__item">
+          <span class="name"><em>Padaria São Bento</em></span>
+          <span class="dist">3 min walk</span>
+        </div>
+        <div class="nearby__item">
+          <span class="name">Jardim da Estrela</span>
+          <span class="dist">6 min walk</span>
+        </div>
+        <div class="nearby__item">
+          <span class="name"><em>Tasca do Chico</em></span>
+          <span class="dist">8 min walk</span>
+        </div>
+        <div class="nearby__item">
+          <span class="name">Mercado de Campo de Ourique</span>
+          <span class="dist">10 min walk</span>
+        </div>
+        <div class="nearby__item">
+          <span class="name"><em>Taberna da Rua das Flores</em></span>
+          <span class="dist">12 min walk</span>
+        </div>
+        <div class="nearby__item">
+          <span class="name">Tram 28 stop</span>
+          <span class="dist">4 min walk</span>
+        </div>
+        <div class="nearby__item">
+          <span class="name"><em>Livraria Bertrand</em></span>
+          <span class="dist">14 min walk</span>
+        </div>
+        <div class="nearby__item">
+          <span class="name">Metro — Rato</span>
+          <span class="dist">9 min walk</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Host -->
+    <div class="host-section">
+      <div class="host-section__head">— Your host</div>
+      <div class="host-card">
+        <div class="host-card__avatar"><em>M</em></div>
+        <div>
+          <div class="host-card__name">Marta</div>
+          <div class="host-card__since">Hosting with Locale since 2023 · Estrela, Lisbon</div>
+          <p class="host-card__note">"I grew up in this neighbourhood. My grandmother had the flat before me. I don't rent it because I need to — I rent it because I like the idea of someone knowing it the way I know it. The right person arrives, and they understand why the seventh step creaks."</p>
+        </div>
+      </div>
+      <a class="link-arrow">Write to Marta <span class="arrow">→</span></a>
+    </div>
+
+  </div>
+
+  <!-- Right: booking widget -->
+  <aside class="booking-widget">
+    <div class="booking-widget__price">
+      <div>
+        <div class="eyebrow">— from</div>
+        <div class="num">€140</div>
+        <div class="per">per night</div>
+      </div>
+      <div class="min">
+        <div class="eyebrow">— minimum</div>
+        <div class="min-nights">21 nights</div>
+      </div>
+    </div>
+
+    <div class="booking-widget__form">
+      <div class="booking-widget__row">
+        <div class="field">
+          <span class="field__label">— Arriving</span>
+          <input class="field__input" type="text" placeholder="May 14">
+        </div>
+        <div class="field">
+          <span class="field__label">— Leaving</span>
+          <input class="field__input" type="text" placeholder="Jun 04">
+        </div>
+      </div>
+      <div class="field">
+        <span class="field__label">— Guests</span>
+        <input class="field__input" type="text" placeholder="2 adults" style="border-bottom: 1px solid var(--rule-strong); padding: 8px 0;">
+      </div>
+
+      <div class="booking-widget__summary">
+        <div class="booking-widget__line">
+          <span class="lbl">€140 × 21 nights</span>
+          <span>€2,940</span>
+        </div>
+        <div class="booking-widget__line saving">
+          <span>— 21-night rate applies</span>
+          <span>standard</span>
+        </div>
+        <div class="booking-widget__line">
+          <span class="lbl">Locale fee</span>
+          <span>€0</span>
+        </div>
+        <div class="booking-widget__line total">
+          <span class="lbl">Total</span>
+          <span>€2,940</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="booking-widget__cta">
+      <button class="btn btn--clay" style="justify-content: center; width: 100%;">Reserve a stay <span class="arrow">→</span></button>
+      <button class="btn btn--ghost" style="justify-content: center; width: 100%;">Save to list</button>
+      <p class="booking-widget__note">No charge today. Marta will<br>confirm within 24 hours.</p>
+    </div>
+  </aside>
+
+</div>
+
+<!-- ── Neighbourhood map ──────────────────────────────────────── -->
+<div class="neighbourhood">
+  <div class="neighbourhood__inner">
+    <div class="neighbourhood__info">
+      <div class="neighbourhood__head">— Location</div>
+      <h2 class="neighbourhood__title"><em>Estrela,</em> Lisbon</h2>
+      <p class="neighbourhood__body">One of the quieter neighbourhoods in Lisbon. Not the one the tourists are sent to, which is <em>exactly the point.</em> Wide streets, tall trees, a market on Saturdays. The kind of place where you go back every morning to the same bakery and they start making your coffee before you've asked.</p>
+    </div>
+    <div class="neighbourhood__map">
+      <div class="pin"></div>
+      <div class="coords">38° 42′ N · 9° 08′ W — Estrela, Lisboa</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ─────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div>
+      <div class="site-footer__brand">Locale<span class="dot"></span></div>
+      <p class="site-footer__tagline">For staying, not visiting. A small list of flats in twelve cities, kept by the people who live in them.</p>
+    </div>
+    <div class="site-footer__col">
+      <div class="site-footer__col-head">Explore</div>
+      <a href="marketing.html">Find a stay</a>
+      <a href="#">All cities</a>
+      <a href="#">Meet the hosts</a>
+      <a href="#">The journal</a>
+    </div>
+    <div class="site-footer__col">
+      <div class="site-footer__col-head">Hosts</div>
+      <a href="dashboard.html">Host dashboard</a>
+      <a href="#">List your flat</a>
+      <a href="#">Host standards</a>
+    </div>
+    <div class="site-footer__col">
+      <div class="site-footer__col-head">Company</div>
+      <a href="#">About</a>
+      <a href="#">Notes</a>
+      <a href="#">Press</a>
+    </div>
+  </div>
+  <div class="site-footer__bottom">
+    <span>Locale · 2026</span>
+    <span>For long-stay travellers and the people who host them</span>
+    <span>locale.co</span>
+  </div>
+</footer>
+
+</body>
+</html>

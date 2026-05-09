@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Locale — Marta's dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="css/locale.css">
+<style>
+
+/* ── App shell: full-height, no scroll on outer ───────────── */
+html, body { height: 100%; }
+body { display: flex; flex-direction: column; overflow: hidden; }
+
+/* ── Top bar ──────────────────────────────────────────────── */
+.app-bar {
+  flex-shrink: 0;
+  height: 56px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--s-5);
+  gap: var(--s-5);
+  z-index: 10;
+}
+.app-bar__brand {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.app-bar__brand .dot {
+  display: inline-block;
+  width: 5px; height: 5px;
+  background: var(--clay);
+  border-radius: 50%;
+  margin-left: 3px;
+  position: relative; top: 1px;
+}
+.app-bar__sep {
+  width: 1px; height: 28px;
+  background: var(--rule);
+  flex-shrink: 0;
+}
+.app-bar__title {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--mute);
+  font-weight: 500;
+}
+.app-bar__spacer { flex: 1; }
+.app-bar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.app-bar__notif {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .12s ease;
+  position: relative;
+}
+.app-bar__notif:hover { background: var(--paper-2); }
+.app-bar__notif svg { width: 16px; height: 16px; stroke: var(--mute); fill: none; stroke-width: 1.5; }
+.app-bar__notif .badge {
+  position: absolute;
+  top: -2px; right: -2px;
+  width: 8px; height: 8px;
+  background: var(--clay);
+  border-radius: 50%;
+  border: 2px solid var(--paper);
+}
+.app-bar__avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #DDB59E, #A14A2A);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--paper);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* ── Body: sidebar + main ─────────────────────────────────── */
+.app-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 220px 1fr 300px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Sidebar rail ─────────────────────────────────────────── */
+.rail {
+  border-right: 1px solid var(--rule);
+  background: var(--paper-2);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: var(--s-4) var(--s-3);
+  gap: 2px;
+}
+.rail::-webkit-scrollbar { width: 0; }
+
+.rail__host {
+  padding: var(--s-3) var(--s-2) var(--s-5);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: var(--s-3);
+}
+.rail__host-name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.rail__host-loc {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--mute);
+}
+
+.rail__section {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+  padding: var(--s-4) var(--s-2) var(--s-2);
+}
+
+.rail__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px var(--s-2);
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--ink-2);
+  border-radius: var(--r-2);
+  position: relative;
+  cursor: pointer;
+  transition: background .12s ease, color .12s ease;
+  text-decoration: none;
+}
+.rail__item:hover { background: var(--paper); color: var(--ink); }
+.rail__item.is-active {
+  color: var(--ink);
+  font-style: italic;
+  background: transparent;
+}
+.rail__item.is-active::before {
+  content: '';
+  position: absolute;
+  left: -1px; top: 7px; bottom: 7px;
+  width: 2px;
+  background: var(--clay);
+  border-radius: 0 var(--r-1) var(--r-1) 0;
+}
+.rail__item svg {
+  width: 16px; height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.rail__item.is-active svg { opacity: 1; }
+.rail__count {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--mute);
+  font-style: normal;
+}
+.rail__count.new {
+  background: var(--clay);
+  color: var(--paper);
+  border-radius: var(--r-pill);
+  padding: 1px 6px;
+  font-size: 9px;
+}
+
+/* ── Main content ─────────────────────────────────────────── */
+.main {
+  overflow-y: auto;
+  padding: var(--s-6) var(--s-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-7);
+}
+.main::-webkit-scrollbar { width: 4px; }
+.main::-webkit-scrollbar-track { background: transparent; }
+.main::-webkit-scrollbar-thumb { background: var(--paper-3); border-radius: 4px; }
+
+/* Page header */
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: var(--s-4);
+}
+.page-head__date {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+  margin-bottom: var(--s-3);
+}
+.page-head h1 {
+  font-family: var(--serif);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+.page-head h1 em { font-style: italic; }
+.page-head__actions { display: flex; gap: var(--s-3); flex-shrink: 0; }
+
+/* Metrics row */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+.metric {
+  padding: var(--s-4) var(--s-5);
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.metric:last-child { border-right: 0; }
+.metric__lbl {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--mute);
+}
+.metric__num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 38px;
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.metric__num--sm {
+  font-size: 22px;
+  line-height: 1.3;
+}
+.metric__delta {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--olive);
+}
+.metric__delta.down { color: var(--rust); }
+
+/* Section label */
+.section-lbl {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+  border-top: 1px solid var(--ink);
+  padding-top: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+
+/* Bookings table */
+.bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--serif);
+  font-size: 15px;
+}
+.bookings-table thead th {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  font-weight: 500;
+  padding: 0 var(--s-4) var(--s-3) 0;
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+}
+.bookings-table thead th:last-child { text-align: right; }
+.bookings-table tbody td {
+  padding: 14px var(--s-4) 14px 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: middle;
+  color: var(--ink-2);
+}
+.bookings-table tbody td:last-child { text-align: right; }
+.bookings-table tbody tr:last-child td { border-bottom: 0; }
+.bookings-table tbody tr { transition: background .1s ease; cursor: pointer; }
+.bookings-table tbody tr:hover td { background: color-mix(in oklab, var(--paper-2) 50%, transparent); }
+
+.booking-guest em { font-style: italic; color: var(--ink); font-size: 16px; }
+.booking-guest .sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--mute);
+  margin-top: 2px;
+}
+.booking-date { color: var(--ink-2); }
+.booking-nights {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink);
+}
+.booking-total {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink);
+}
+
+/* Vacancy alert */
+.vacancy-alert {
+  background: color-mix(in oklab, var(--rust) 6%, var(--paper));
+  border: 1px solid color-mix(in oklab, var(--rust) 22%, transparent);
+  padding: var(--s-4) var(--s-5);
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+}
+.vacancy-alert__dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--rust);
+  flex-shrink: 0;
+}
+.vacancy-alert__text {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink-2);
+  flex: 1;
+}
+.vacancy-alert__text em { font-style: italic; color: var(--ink); }
+.vacancy-alert__date {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--rust);
+}
+
+/* ── Right panel ──────────────────────────────────────────── */
+.panel {
+  border-left: 1px solid var(--rule);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.panel::-webkit-scrollbar { width: 0; }
+
+/* Messages */
+.panel__section {
+  border-bottom: 1px solid var(--rule);
+  flex-shrink: 0;
+}
+.panel__head {
+  padding: var(--s-4) var(--s-5);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.panel__head-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+}
+.panel__head a {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--mute);
+  cursor: pointer;
+}
+.panel__head a:hover { color: var(--clay); }
+
+.msg-item {
+  padding: var(--s-4) var(--s-5);
+  border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+  transition: background .12s ease;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.msg-item:last-child { border-bottom: 0; }
+.msg-item:hover { background: var(--paper-2); }
+.msg-item.unread .msg-item__from { color: var(--ink); }
+.msg-item__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.msg-item__from {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-2);
+}
+.msg-item__time {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--mute);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.msg-item__preview {
+  font-family: var(--serif);
+  font-size: 14px;
+  color: var(--mute);
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.msg-item__badge {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--clay);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Quick notes */
+.notes-widget {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.notes-widget__body { flex: 1; padding: var(--s-4) var(--s-5); }
+.notes-list { display: flex; flex-direction: column; gap: var(--s-3); }
+.note-chip {
+  padding: var(--s-3) var(--s-4);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-2);
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: border-color .12s ease, background .12s ease;
+}
+.note-chip:hover { border-color: var(--rule-strong); background: var(--paper-2); }
+.note-chip em { font-style: italic; color: var(--ink); }
+.note-chip__date {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--mute);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+/* Mini calendar */
+.mini-cal {
+  border-bottom: 1px solid var(--rule);
+}
+.mini-cal__head {
+  padding: var(--s-3) var(--s-5);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--mute);
+}
+.mini-cal__grid {
+  padding: var(--s-3) var(--s-5) var(--s-4);
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+}
+.mini-cal__dh {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--mute);
+  padding: 4px 0;
+}
+.mini-cal__d {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-3);
+  padding: 5px 2px;
+  border-radius: var(--r-1);
+  cursor: pointer;
+  transition: background .1s ease;
+  line-height: 1;
+}
+.mini-cal__d:hover { background: var(--paper-2); }
+.mini-cal__d.booked {
+  background: color-mix(in oklab, var(--clay-soft) 30%, var(--paper));
+  color: var(--clay-deep);
+}
+.mini-cal__d.today {
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+}
+.mini-cal__d.vacant {
+  background: color-mix(in oklab, var(--rust) 12%, var(--paper));
+  color: var(--rust);
+}
+.mini-cal__d.muted { color: var(--mute-2); }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .app-body { grid-template-columns: 200px 1fr; }
+  .panel { display: none; }
+  .metrics { grid-template-columns: repeat(2, 1fr); }
+  .metric:nth-child(2) { border-right: 0; }
+}
+@media (max-width: 800px) {
+  body { overflow: auto; }
+  .app-body { grid-template-columns: 1fr; overflow: visible; }
+  .main { overflow: visible; }
+  .rail { display: none; }
+  .metrics { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Top app bar ────────────────────────────────────────────── -->
+<header class="app-bar">
+  <a href="marketing.html" class="app-bar__brand">Locale<span class="dot"></span></a>
+  <div class="app-bar__sep"></div>
+  <span class="app-bar__title">Host dashboard</span>
+  <div class="app-bar__spacer"></div>
+  <div class="app-bar__right">
+    <div class="app-bar__notif">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="badge"></span>
+    </div>
+    <div class="app-bar__avatar"><em>M</em></div>
+  </div>
+</header>
+
+<!-- ── App body ───────────────────────────────────────────────── -->
+<div class="app-body">
+
+  <!-- Sidebar rail -->
+  <aside class="rail">
+    <div class="rail__host">
+      <div class="rail__host-name">Marta</div>
+      <div class="rail__host-loc">Estrela, Lisbon · No. 014</div>
+    </div>
+
+    <div class="rail__section">Main</div>
+
+    <a class="rail__item is-active" href="dashboard.html">
+      <svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg>
+      Today
+    </a>
+    <a class="rail__item" href="#">
+      <svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="14" rx="1"/><path d="M8 3v5M16 3v5M4 11h16"/></svg>
+      Calendar
+      <span class="rail__count">14</span>
+    </a>
+    <a class="rail__item" href="#">
+      <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.7 7.4L3 21l1.6-5A8.5 8.5 0 1 1 21 11.5z"/></svg>
+      Messages
+      <span class="rail__count new">3</span>
+    </a>
+    <a class="rail__item" href="#">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+      Guests
+    </a>
+    <a class="rail__item" href="#">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M3 9h6M3 14h6"/></svg>
+      Bookings
+    </a>
+
+    <div class="rail__section">The flat</div>
+
+    <a class="rail__item" href="stay.html">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      View listing
+    </a>
+    <a class="rail__item" href="#">
+      <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      House notes
+    </a>
+    <a class="rail__item" href="#">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      Availability
+    </a>
+
+    <div class="rail__section">Earnings</div>
+
+    <a class="rail__item" href="#">
+      <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Ledger
+    </a>
+    <a class="rail__item" href="#">
+      <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      Payouts
+    </a>
+    <a class="rail__item" href="#">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      Settings
+    </a>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- Page header -->
+    <div class="page-head">
+      <div>
+        <div class="page-head__date">— Tuesday, 12 May 2026</div>
+        <h1>Good morning, <em>Marta.</em></h1>
+      </div>
+      <div class="page-head__actions">
+        <button class="btn btn--ghost btn--small">Add a note</button>
+        <button class="btn btn--small">New booking <span class="arrow">→</span></button>
+      </div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="metrics">
+      <div class="metric">
+        <span class="metric__lbl">— this month</span>
+        <span class="metric__num">€2,940</span>
+        <span class="metric__delta">▲ 12% vs. April</span>
+      </div>
+      <div class="metric">
+        <span class="metric__lbl">— nights booked</span>
+        <span class="metric__num">21</span>
+        <span class="metric__delta">▲ 4 nights</span>
+      </div>
+      <div class="metric">
+        <span class="metric__lbl">— next arrival</span>
+        <span class="metric__num metric__num--sm"><em>Hannah K.</em><br>Thursday</span>
+      </div>
+      <div class="metric">
+        <span class="metric__lbl">— vacancy</span>
+        <span class="metric__num">3 days</span>
+        <span class="metric__delta down">— Aug 27 → 30</span>
+      </div>
+    </div>
+
+    <!-- Vacancy alert -->
+    <div class="vacancy-alert">
+      <span class="vacancy-alert__dot"></span>
+      <span class="vacancy-alert__text"><em>3-day gap</em> between Soren and Aiko — August 27 to 30. You can accept a short stay or block the dates.</span>
+      <span class="vacancy-alert__date">Aug 27 – 30</span>
+      <button class="btn btn--quiet btn--small">Manage</button>
+    </div>
+
+    <!-- Upcoming bookings -->
+    <div>
+      <div class="section-lbl">— Upcoming bookings</div>
+      <table class="bookings-table">
+        <thead>
+          <tr>
+            <th>Guest</th>
+            <th>Arriving</th>
+            <th>Nights</th>
+            <th>Status</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="booking-guest"><em>Hannah K.</em></div>
+              <div class="booking-guest"><span class="sub">Berlin, DE · First stay</span></div>
+            </td>
+            <td class="booking-date">Thu · May 14</td>
+            <td class="booking-nights">21</td>
+            <td><span class="tag tag--olive" style="font-size: 10px;">— ready</span></td>
+            <td class="booking-total">€2,940</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="booking-guest"><em>Soren &amp; Mira</em></div>
+              <div class="booking-guest"><span class="sub">Copenhagen, DK · 2nd stay</span></div>
+            </td>
+            <td class="booking-date">Tue · Jun 09</td>
+            <td class="booking-nights">28</td>
+            <td><span class="tag" style="font-size: 10px;">— confirmed</span></td>
+            <td class="booking-total">€3,640</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="booking-guest"><em>Aiko T.</em></div>
+              <div class="booking-guest"><span class="sub">Tokyo, JP · First stay</span></div>
+            </td>
+            <td class="booking-date">Sun · Jul 12</td>
+            <td class="booking-nights">42</td>
+            <td><span class="tag" style="font-size: 10px;">— confirmed</span></td>
+            <td class="booking-total">€5,376</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="booking-guest" style="color: var(--mute); font-style: italic;"><em>Pending review</em></div>
+              <div class="booking-guest"><span class="sub">Request received today</span></div>
+            </td>
+            <td class="booking-date">Sun · Aug 30</td>
+            <td class="booking-nights">14</td>
+            <td><span class="tag tag--clay" style="font-size: 10px;">— review</span></td>
+            <td class="booking-total">€1,960</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Recent earnings summary -->
+    <div>
+      <div class="section-lbl">— Year to date</div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--rule); background: var(--paper);">
+        <div style="padding: var(--s-5); border-right: 1px solid var(--rule);">
+          <div class="metric__lbl" style="margin-bottom: var(--s-3);">Total earned</div>
+          <div style="font-family: var(--serif); font-style: italic; font-size: 32px; color: var(--ink); letter-spacing: -0.02em;">€14,280</div>
+          <div class="metric__delta" style="margin-top: var(--s-2);">▲ 18% vs. last year</div>
+        </div>
+        <div style="padding: var(--s-5); border-right: 1px solid var(--rule);">
+          <div class="metric__lbl" style="margin-bottom: var(--s-3);">Nights hosted</div>
+          <div style="font-family: var(--serif); font-style: italic; font-size: 32px; color: var(--ink); letter-spacing: -0.02em;">102</div>
+          <div class="metric__delta" style="margin-top: var(--s-2);">▲ 14 more nights</div>
+        </div>
+        <div style="padding: var(--s-5);">
+          <div class="metric__lbl" style="margin-bottom: var(--s-3);">Avg. stay length</div>
+          <div style="font-family: var(--serif); font-style: italic; font-size: 32px; color: var(--ink); letter-spacing: -0.02em;">26 <span style="font-size: 20px; letter-spacing: 0;">nights</span></div>
+          <div class="metric__delta" style="margin-top: var(--s-2);">▲ 4 nights longer</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Right panel -->
+  <aside class="panel">
+
+    <!-- Mini calendar -->
+    <div class="mini-cal">
+      <div class="mini-cal__head">
+        <span>May 2026</span>
+        <span style="cursor: pointer;">Jun →</span>
+      </div>
+      <div class="mini-cal__grid">
+        <div class="mini-cal__dh">M</div>
+        <div class="mini-cal__dh">T</div>
+        <div class="mini-cal__dh">W</div>
+        <div class="mini-cal__dh">T</div>
+        <div class="mini-cal__dh">F</div>
+        <div class="mini-cal__dh">S</div>
+        <div class="mini-cal__dh">S</div>
+        <!-- Week 1 -->
+        <div class="mini-cal__d muted">28</div>
+        <div class="mini-cal__d muted">29</div>
+        <div class="mini-cal__d muted">30</div>
+        <div class="mini-cal__d muted">1</div>
+        <div class="mini-cal__d muted">2</div>
+        <div class="mini-cal__d muted">3</div>
+        <div class="mini-cal__d muted">4</div>
+        <!-- Week 2 -->
+        <div class="mini-cal__d">5</div>
+        <div class="mini-cal__d">6</div>
+        <div class="mini-cal__d">7</div>
+        <div class="mini-cal__d">8</div>
+        <div class="mini-cal__d">9</div>
+        <div class="mini-cal__d">10</div>
+        <div class="mini-cal__d">11</div>
+        <!-- Week 3 -->
+        <div class="mini-cal__d today">12</div>
+        <div class="mini-cal__d">13</div>
+        <div class="mini-cal__d booked">14</div>
+        <div class="mini-cal__d booked">15</div>
+        <div class="mini-cal__d booked">16</div>
+        <div class="mini-cal__d booked">17</div>
+        <div class="mini-cal__d booked">18</div>
+        <!-- Week 4 -->
+        <div class="mini-cal__d booked">19</div>
+        <div class="mini-cal__d booked">20</div>
+        <div class="mini-cal__d booked">21</div>
+        <div class="mini-cal__d booked">22</div>
+        <div class="mini-cal__d booked">23</div>
+        <div class="mini-cal__d booked">24</div>
+        <div class="mini-cal__d booked">25</div>
+        <!-- Week 5 -->
+        <div class="mini-cal__d booked">26</div>
+        <div class="mini-cal__d booked">27</div>
+        <div class="mini-cal__d booked">28</div>
+        <div class="mini-cal__d booked">29</div>
+        <div class="mini-cal__d booked">30</div>
+        <div class="mini-cal__d booked">31</div>
+        <div class="mini-cal__d muted">1</div>
+      </div>
+      <div style="padding: 0 var(--s-5) var(--s-3); display: flex; gap: var(--s-4); font-family: var(--mono); font-size: 10px; color: var(--mute); text-transform: uppercase; letter-spacing: 0.1em;">
+        <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: color-mix(in oklab, var(--clay-soft) 50%, var(--paper)); display: inline-block;"></span>Booked</span>
+        <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: color-mix(in oklab, var(--rust) 18%, var(--paper)); display: inline-block;"></span>Vacant</span>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="panel__section">
+      <div class="panel__head">
+        <span class="panel__head-title">Messages</span>
+        <a>View all</a>
+      </div>
+      <div class="msg-item unread">
+        <div class="msg-item__row">
+          <span class="msg-item__from">Hannah K.</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="msg-item__time">9:41</span>
+            <span class="msg-item__badge"></span>
+          </div>
+        </div>
+        <p class="msg-item__preview">Hi Marta — very excited for Thursday. Quick question about the keys: is there a lockbox or should I expect…</p>
+      </div>
+      <div class="msg-item unread">
+        <div class="msg-item__row">
+          <span class="msg-item__from">Soren &amp; Mira</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="msg-item__time">Yesterday</span>
+            <span class="msg-item__badge"></span>
+          </div>
+        </div>
+        <p class="msg-item__preview">We stayed last August and loved it. Will the east window desk still be there? Mira does her writing in the morning and…</p>
+      </div>
+      <div class="msg-item">
+        <div class="msg-item__row">
+          <span class="msg-item__from">Aiko T.</span>
+          <span class="msg-item__time">May 8</span>
+        </div>
+        <p class="msg-item__preview">Thank you for confirming. I'll be arriving from Haneda via Paris — should be at the flat around 7pm on the 12th of July.</p>
+      </div>
+    </div>
+
+    <!-- Quick notes -->
+    <div class="notes-widget">
+      <div class="panel__head">
+        <span class="panel__head-title">House notes</span>
+        <a>Edit</a>
+      </div>
+      <div class="notes-widget__body">
+        <div class="notes-list">
+          <div class="note-chip">
+            <em>The fishmonger</em> opens at 6. By 8:15 the good stuff is gone.
+            <div class="note-chip__date">Pinned</div>
+          </div>
+          <div class="note-chip">
+            Lift is out <em>again</em> — building manager says Thursday.
+            <div class="note-chip__date">Added today</div>
+          </div>
+          <div class="note-chip">
+            The bakery on São Bento now does a Thursday <em>pastéis de tentúgal.</em>
+            <div class="note-chip__date">May 6</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+</div>
+
+</body>
+</html>
