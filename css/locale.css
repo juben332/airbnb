@@ -22,14 +22,14 @@
   --mute-2:       #A89E8E;
 
   /* Accent */
-  --clay:         #A14A2A;
-  --clay-deep:    #7A3618;
-  --clay-soft:    #DDB59E;
+  --clay:         #5C6240;
+  --clay-deep:    #3D4229;
+  --clay-soft:    #B4BA9A;
 
   /* Status */
   --olive:        #5C6240;
   --slate:        #4A5663;
-  --rust:         #9C3F2A;
+  --rust:         #5C6240;
 
   /* Lines */
   --rule:         rgba(27, 23, 20, 0.14);
